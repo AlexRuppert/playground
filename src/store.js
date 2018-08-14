@@ -1,16 +1,7 @@
 import Vue from 'vue'
-import Vuex from 'vuex'
+import VueStash from 'vue-stash'
+Vue.use(VueStash)
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  state: {
-
-  },
-  mutations: {
-
-  },
-  actions: {
-
-  }
-})
+export default {
+  hanzi: null
+}

@@ -28,21 +28,25 @@ export default {
           url: '/',
         },
         {
+          icon: 'library_books',
+          title: 'Learn Chinese Vocabulary',
+          url: '/learn-chinese-vocabulary',
+        },
+        {
           icon: 'translate',
-          title: 'Learn Chinese',
-          url: '/learn-chinese',
+          title: 'Learn Chinese Characters',
+          url: '/learn-chinese-characters',
         },
       ],
 
       right: true,
       rightDrawer: false,
-     
     }
   },
-  computed:{
-    title(){
+  computed: {
+    title() {
       return this.$route.meta.title
-    }
+    },
   },
   methods: {
     openRoute(url) {

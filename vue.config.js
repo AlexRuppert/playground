@@ -3,5 +3,5 @@ module.exports = {
     '/playground/' :
     '/',
   outputDir: 'docs',
-  
+  productionSourceMap: false,
 }
