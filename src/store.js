@@ -3,5 +3,5 @@ import VueStash from 'vue-stash'
 Vue.use(VueStash)
 
 export default {
-  hanzi: null
+ 
 }

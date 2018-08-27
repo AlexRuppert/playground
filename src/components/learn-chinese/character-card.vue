@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-card.margin
+  v-card
     v-card-title.character-card
       .pinyin(v-html='pinyin')
       v-btn.sound(flat icon color='pink' @click='playSound(character)')
@@ -7,29 +7,35 @@
       .character.sans-serif {{character}}
       .translation {{translation}}
       .radical-container(column)
-        .radical.sans-serif(v-for='radical in radicals') {{radical}}
+        .radical.sans-serif(v-for='radical in radicals')
+          v-tooltip(top)
+            span(slot='activator') {{radical.radical}}
+            .text-xs-center {{radical.pinyin2}}
+            .text-xs-center {{radical.definitions[0]}}
 </template>
 
 <script>
-import pinyinConvert from 'pinyin-tone-convert'
-import hanzi from 'hanzi'
+import axios from 'axios'
 import tss from '../../shared/tss'
 export default {
   name: 'character-card',
-  store: ['hanzi'],
+  store: [],
   props: {
     character: String,
   },
   data() {
-    return {}
+    return {
+      hanzi: {
+        character: '',
+        components: [],
+        translations: [],
+      },
+    }
   },
   computed: {
     pinyin() {
       try {
-        const raw = pinyinConvert(this.hanzi.getPinyin(this.character)[0] || '')
-        if (raw === '_number') {
-          return ''
-        }
+        const raw = this.hanzi.translations[0].pinyin2
         return this.colorizePinyin(raw)
       } catch (error) {
         return ''
@@ -37,19 +43,16 @@ export default {
     },
     radicals() {
       try {
-        return this.hanzi
-          .decompose(this.character)
-          .components2.map(r => r.replace('No glyph available', '**'))
+        return this.hanzi.components.filter(r => r.radical.indexOf('No') < 0)
       } catch (err) {
         return ''
       }
     },
     translation() {
       try {
-        let definitions = this.hanzi.definitionLookup(this.character)
-        definitions = definitions.filter(d => d.definition.indexOf('surname') < 0)
-        let definition = definitions[0].definition
-          .split('/')
+        let translations = this.hanzi.translations
+        translations = translations.filter(t => t.definitions[0].indexOf('surname') < 0)
+        let definition = translations[0].definitions
           .filter(d => d.indexOf('CL:') < 0)
           .slice(0, 2)
           .join('; ')
@@ -59,11 +62,20 @@ export default {
       }
     },
   },
+  watch: {
+    character: function(newVal, oldVal) {
+      this.lookUpCharacter()
+    },
+  },
   methods: {
-    initHanzi() {
-      if (!this.hanzi) {
-        this.hanzi = hanzi
-        this.hanzi.start()
+    lookUpCharacter() {
+      if (this.character) {
+        ;(async () => {
+          const result = (await axios.get(
+            'http://localhost:5001/hanzi/characters/' + this.character,
+          )).data
+          this.hanzi = result[this.character]
+        })()
       }
     },
     async playSound(character) {
@@ -78,7 +90,7 @@ export default {
     },
   },
   beforeMount() {
-    this.initHanzi()
+    this.lookUpCharacter()
   },
 }
 </script>
@@ -86,6 +98,7 @@ export default {
 .margin {
   margin: 10px;
 }
+
 .pinyin {
   .tone {
     font-weight: 600;
@@ -139,7 +152,7 @@ export default {
     'hanyin spacer radical'
     'translation spacer radical';
   justify-items: center;
-  padding: 25px;
+  padding: 10px;
 }
 .tone4 {
   font-weight: 600;
@@ -156,6 +169,7 @@ export default {
 .radical {
   font-size: 16px;
 }
+
 .sound {
   grid-area: sound;
 }

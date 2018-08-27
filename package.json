@@ -7,9 +7,9 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "hanzi": "^2.1.0",
+    "axios": "^0.18.0",
+    "hanzi-writer": "^0.12.0",
     "js-yaml": "^3.12.0",
-    "pinyin-tone-convert": "^0.0.2",
     "register-service-worker": "^1.0.0",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1",
