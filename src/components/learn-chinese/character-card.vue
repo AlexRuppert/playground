@@ -1,27 +1,43 @@
 <template lang="pug">
-  v-card
+  v-card.full-width
     v-card-title.character-card
-      .pinyin(v-html='pinyin')
-      v-btn.sound(flat icon color='pink' @click='playSound(character)')
-        v-icon volume_up
-      .character.sans-serif {{character}}
-      .translation {{translation}}
+      pinyin.pinyin(:pinyin='pinyin')
+      .controls
+        v-btn(flat icon color='primary' @click='write')
+          v-icon {{writing?'undo':'translate'}}
+        v-btn(flat icon color='primary' @click='playSound')
+          v-icon volume_up
+        v-btn(flat icon color='primary' @click='toggleSerif')
+          v-icon text_fields
+      .character
+        caracter-drawing(v-if='writing' :character='character' :pinyin='pinyin')
+        .huge(v-else :class='{"sans-serif": !serif}') {{character}}
+      .translation(v-if='!writing') {{translation}}
       .radical-container(column)
         .radical.sans-serif(v-for='radical in radicals')
           v-tooltip(top)
             span(slot='activator') {{radical.radical}}
             .text-xs-center {{radical.pinyin2}}
             .text-xs-center {{radical.definitions[0]}}
+    
 </template>
 
 <script>
 import axios from 'axios'
 import tss from '../../shared/tss'
+import pinyin from '@/components/learn-chinese/pinyin.vue'
+import caracterDrawing from '@/components/learn-chinese/character-drawing.vue'
+import HanziWriter from 'hanzi-writer'
+
 export default {
   name: 'character-card',
   store: [],
   props: {
     character: String,
+  },
+  components: {
+    pinyin,
+    caracterDrawing,
   },
   data() {
     return {
@@ -30,13 +46,14 @@ export default {
         components: [],
         translations: [],
       },
+      writing: false,
+      serif: false,
     }
   },
   computed: {
     pinyin() {
       try {
-        const raw = this.hanzi.translations[0].pinyin2
-        return this.colorizePinyin(raw)
+        return this.hanzi.translations[0].pinyin2
       } catch (error) {
         return ''
       }
@@ -72,14 +89,22 @@ export default {
       if (this.character) {
         ;(async () => {
           const result = (await axios.get(
-            'http://localhost:5001/hanzi/characters/' + this.character,
+            (process.env.NODE_ENV === 'development'
+              ? 'http://localhost:5001/hanzi/characters/'
+              : 'http://hanzi-service.fr.openode.io/hanzi/characters/') + this.character,
           )).data
           this.hanzi = result[this.character]
         })()
       }
     },
-    async playSound(character) {
-      tss.chinese(character)
+    write() {
+      this.writing = !this.writing
+    },
+    toggleSerif() {
+      this.serif = !this.serif
+    },
+    async playSound() {
+      tss.chinese(this.character)
     },
     colorizePinyin(text) {
       return text
@@ -98,60 +123,23 @@ export default {
 .margin {
   margin: 10px;
 }
-
-.pinyin {
-  .tone {
-    font-weight: 600;
-    position: relative;
-    padding: 0 2px;
-    &::before {
-      position: absolute;
-      content: '4';
-
-      bottom: 80%;
-      font-size: 12px;
-      left: 25%;
-      right: 25%;
-    }
-    &.t1 {
-      color: #0059ff;
-      &::before {
-        content: '1';
-      }
-    }
-    &.t2 {
-      color: #f00;
-      &::before {
-        content: '2';
-      }
-    }
-    &.t3 {
-      color: #00830b;
-      &::before {
-        content: '3';
-      }
-    }
-    &.t4 {
-      color: #f700ff;
-      &::before {
-        content: '4';
-      }
-    }
-  }
-}
 </style>
 
 <style scoped lang="scss">
+.full-width {
+  width: 100%;
+}
 .character-card {
-  min-width: 300px;
+  width: 100%;
   display: grid;
-  grid-template-columns: 3fr 20px 1fr;
-  grid-template-rows: 1fr auto 1fr;
+  grid-template-columns: 35px 3fr 35px;
+  grid-template-rows: 60px auto 1fr;
   grid-template-areas:
-    'pinyin spacer sound'
-    'hanyin spacer radical'
-    'translation spacer radical';
+    'radical pinyin controls'
+    'radical hanyin controls'
+    'radical translation controls';
   justify-items: center;
+  align-items: center;
   padding: 10px;
 }
 .tone4 {
@@ -170,18 +158,24 @@ export default {
   font-size: 16px;
 }
 
-.sound {
-  grid-area: sound;
+.controls {
+  grid-area: controls;
+  align-self: start;
 }
 .sans-serif {
   font-family: Georgia, 'Times New Roman', 'Microsoft YaHei', 微软雅黑, STXihei, 华文细黑, serif;
 }
+
+.huge {
+  font-size: 80px;
+}
 .character {
-  font-size: 60px;
   grid-area: hanyin;
+  width: 100%;
+  text-align: center;
 }
 .translation {
   grid-area: translation;
-  max-width: 170px;
+  max-width: 300px;
 }
 </style>

@@ -9,6 +9,7 @@ export default class Tss {
     msg.voice =
       speechSynthesis.getVoices().filter(v => v.lang === 'zh-CN')[0] ||
       speechSynthesis.getVoices()[0]
+    speechSynthesis.cancel()
     speechSynthesis.speak(msg)
   }
 }
