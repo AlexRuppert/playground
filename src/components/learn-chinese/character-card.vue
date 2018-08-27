@@ -90,8 +90,8 @@ export default {
         ;(async () => {
           const result = (await axios.get(
             (process.env.NODE_ENV === 'development'
-              ? 'http://localhost:5001/hanzi/characters/'
-              : 'http://hanzi-service.fr.openode.io/hanzi/characters/') + this.character,
+              ? 'https://localhost:443/hanzi/characters/'
+              : 'https://hanzi-service.fr.openode.io/hanzi/characters/') + this.character,
           )).data
           this.hanzi = result[this.character]
         })()
