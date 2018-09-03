@@ -1,7 +1,7 @@
 <template lang="pug">
   v-card.full-width
     v-card-title.character-card
-      pinyin.pinyin(:pinyin='pinyin')
+      pinyin.pinyin(:pinyin='pinyin' size='20')
       .controls
         v-btn(flat icon color='primary' @click='write')
           v-icon {{writing?'undo':'translate'}}
@@ -11,8 +11,16 @@
           v-icon text_fields
       .character
         caracter-drawing(v-if='writing' :character='character' :pinyin='pinyin')
-        .huge(v-else :class='{"sans-serif": !serif}') {{character}}
-      .translation(v-if='!writing') {{translation}}
+        .huge(v-else :class='{"sans-serif": !serif, serif: serif}') {{character}}
+      .translation(v-if='!writing')
+        v-expansion-panel.no-shadow
+          v-expansion-panel-content(ripple)
+            div(slot='header') {{translation}}
+            v-card
+              v-card-text
+                ol
+                  li(v-for='t in translationFull') {{t}}
+
       .radical-container(column)
         .radical.sans-serif(v-for='radical in radicals')
           v-tooltip(top)
@@ -23,8 +31,8 @@
 </template>
 
 <script>
-import axios from 'axios'
 import tss from '../../shared/tss'
+import { lookUp, filterTranslations } from '../../shared/hanzi'
 import pinyin from '@/components/learn-chinese/pinyin.vue'
 import caracterDrawing from '@/components/learn-chinese/character-drawing.vue'
 import HanziWriter from 'hanzi-writer'
@@ -53,7 +61,7 @@ export default {
   computed: {
     pinyin() {
       try {
-        return this.hanzi.translations[0].pinyin2
+        return filterTranslations(this.hanzi.translations)[0].pinyin2
       } catch (error) {
         return ''
       }
@@ -67,7 +75,7 @@ export default {
     },
     translation() {
       try {
-        let translations = this.hanzi.translations
+        let translations = filterTranslations(this.hanzi.translations)
         translations = translations.filter(t => t.definitions[0].indexOf('surname') < 0)
         let definition = translations[0].definitions
           .filter(d => d.indexOf('CL:') < 0)
@@ -75,7 +83,17 @@ export default {
           .join('; ')
         return definition
       } catch (error) {
-        return 'Unknown'
+        return ''
+      }
+    },
+    translationFull() {
+      try {
+        let translations = this.hanzi.translations
+        translations = translations.filter(t => t.definitions[0].indexOf('surname') < 0)
+        let definition = translations[0].definitions.filter(d => d.indexOf('CL:') < 0)
+        return definition
+      } catch (error) {
+        return ''
       }
     },
   },
@@ -88,12 +106,7 @@ export default {
     lookUpCharacter() {
       if (this.character) {
         ;(async () => {
-          const result = (await axios.get(
-            (process.env.NODE_ENV === 'development'
-              ? 'https://localhost:443/hanzi/characters/'
-              : 'https://hanzi-service.fr.openode.io/hanzi/characters/') + this.character,
-          )).data
-          this.hanzi = result[this.character]
+          this.hanzi = (await lookUp(this.character))[this.character]
         })()
       }
     },
@@ -105,13 +118,6 @@ export default {
     },
     async playSound() {
       tss.chinese(this.character)
-    },
-    colorizePinyin(text) {
-      return text
-        .replace(/[āɑ̄ēīōūǖĀĒĪŌŪǕ]/g, '<span class="tone t1">$&</span>')
-        .replace(/[áɑ́éíóúǘÁÉÍÓÚǗ]/g, '<span class="tone t2">$&</span>')
-        .replace(/[ǎɑ̌ěǐǒǔǚǍĚǏǑǓǙ]/g, '<span class="tone t3">$&</span>')
-        .replace(/[àɑ̀èìòùǜÀÈÌÒÙǛ]/g, '<span class="tone t4">$&</span>')
     },
   },
   beforeMount() {
@@ -126,6 +132,9 @@ export default {
 </style>
 
 <style scoped lang="scss">
+.no-shadow {
+  box-shadow: none;
+}
 .full-width {
   width: 100%;
 }
@@ -137,15 +146,12 @@ export default {
   grid-template-areas:
     'radical pinyin controls'
     'radical hanyin controls'
-    'radical translation controls';
+    'spacer translation controls';
   justify-items: center;
   align-items: center;
   padding: 10px;
 }
-.tone4 {
-  font-weight: 600;
-  color: #f00;
-}
+
 .pinyin {
   font-size: 20px;
   grid-area: pinyin;
@@ -155,15 +161,20 @@ export default {
   grid-area: radical;
 }
 .radical {
-  font-size: 16px;
+  font-size: 18px;
+  padding: 3px;
 }
 
 .controls {
   grid-area: controls;
   align-self: start;
 }
+.serif {
+  font-family: 'Simsun', Georgia, 'Times New Roman', '仿宋', STXihei, '华文仿宋', serif;
+}
+
 .sans-serif {
-  font-family: Georgia, 'Times New Roman', 'Microsoft YaHei', 微软雅黑, STXihei, 华文细黑, serif;
+  font-family: 'Microsoft YaHei', Georgia, 'Times New Roman', 微软雅黑, STXihei, 华文细黑, serif;
 }
 
 .huge {
@@ -176,6 +187,6 @@ export default {
 }
 .translation {
   grid-area: translation;
-  max-width: 300px;
+  width: 100%;
 }
 </style>

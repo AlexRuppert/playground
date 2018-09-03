@@ -10,8 +10,10 @@
     "axios": "^0.18.0",
     "hanzi-writer": "^0.12.0",
     "js-yaml": "^3.12.0",
+    "lodash.uniq": "^4.5.0",
     "register-service-worker": "^1.0.0",
     "vue": "^2.5.16",
+    "vue-long-press-directive": "^1.0.2",
     "vue-router": "^3.0.1",
     "vue-stash": "^2.0.1-beta",
     "vuetify": "^1.0.19"

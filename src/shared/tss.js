@@ -12,4 +12,14 @@ export default class Tss {
     speechSynthesis.cancel()
     speechSynthesis.speak(msg)
   }
+
+  static chineseSlow(text) {
+    let msg = new SpeechSynthesisUtterance(text || '')
+    msg.voice =
+      speechSynthesis.getVoices().filter(v => v.lang === 'zh-CN')[0] ||
+      speechSynthesis.getVoices()[0]
+    speechSynthesis.cancel()
+    msg.rate = 0.5
+    speechSynthesis.speak(msg)
+  }
 }

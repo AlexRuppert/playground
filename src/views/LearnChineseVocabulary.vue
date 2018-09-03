@@ -1,44 +1,29 @@
-<template>
-  <v-container fluid>
-    <v-slide-y-transition mode="out-in">
-      <v-layout column align-center>
-        {{test}}
-      </v-layout>
-    </v-slide-y-transition>
-  </v-container>
+<template lang="pug">
+ v-slide-y-transition(mode='out-in')
+    v-layout(column='' align-center='')
+     
+      vocabulary-card(chinese='我喜欢鲜花和蛋糕。' english='I like flowers and cake.')
 </template>
 
 <script>
+import vocabularyCard from '@/components/learn-chinese/vocabulary-card.vue'
 export default {
   name: 'LearnChineseVocabulary',
-  store: ['hanzi'],
+  components: { vocabularyCard },
+  store: [],
   data() {
     return {
-      test: '',
+      
     }
   },
   methods: {},
   mounted() {
-    this.test = this.hanzi.definitionLookup('白')
+    
   },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1,
-h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+
 </style>

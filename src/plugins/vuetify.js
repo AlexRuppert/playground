@@ -4,6 +4,8 @@ import {
   VApp,
   VNavigationDrawer,
   VFooter,
+  VDivider,
+  VExpansionPanel,
   VList,
   VBtn,
   VIcon,
@@ -11,6 +13,7 @@ import {
   VToolbar,
   VTooltip,
   VCard,
+  VMenu,
   VTextField,
   VSubheader,
   transitions
@@ -22,6 +25,8 @@ Vue.use(Vuetify, {
     VApp,
     VNavigationDrawer,
     VFooter,
+    VDivider,
+    VExpansionPanel,
     VList,
     VBtn,
     VIcon,
@@ -29,6 +34,7 @@ Vue.use(Vuetify, {
     VToolbar,
     VTooltip,
     VCard,
+    VMenu,
     VTextField,
     VSubheader,
     transitions

@@ -1,5 +1,5 @@
 <template lang="pug">
-  .pinyin(v-html='pinyinColored')
+  .pinyin(v-html='pinyinColored' :style='{fontSize: size + "px"}')
 </template>
 
 <script>
@@ -8,17 +8,21 @@ export default {
   store: [],
   props: {
     pinyin: String,
+    size: String,
   },
   data() {
     return {}
   },
   computed: {
     pinyinColored() {
-      return this.pinyin
-        .replace(/[āɑ̄ēīōūǖĀĒĪŌŪǕ]/g, '<span class="tone t1">$&</span>')
-        .replace(/[áɑ́éíóúǘÁÉÍÓÚǗ]/g, '<span class="tone t2">$&</span>')
-        .replace(/[ǎɑ̌ěǐǒǔǚǍĚǏǑǓǙ]/g, '<span class="tone t3">$&</span>')
-        .replace(/[àɑ̀èìòùǜÀÈÌÒÙǛ]/g, '<span class="tone t4">$&</span>')
+      if (this.pinyin) {
+        return this.pinyin
+          .replace(/[āɑ̄ēīōūǖĀĒĪŌŪǕ]/g, '<span class="tone t1">$&</span>')
+          .replace(/[áɑ́éíóúǘÁÉÍÓÚǗ]/g, '<span class="tone t2">$&</span>')
+          .replace(/[ǎɑ̌ěǐǒǔǚǍĚǏǑǓǙ]/g, '<span class="tone t3">$&</span>')
+          .replace(/[àɑ̀èìòùǜÀÈÌÒÙǛ]/g, '<span class="tone t4">$&</span>')
+      }
+      return ''
     },
   },
 }
@@ -38,7 +42,7 @@ export default {
     position: absolute;
     content: '4';
     bottom: 80%;
-    font-size: 12px;
+    font-size: xx-small;
     left: 25%;
     right: 25%;
   }
