@@ -15,47 +15,34 @@
       router-view#router
 </template>
 
-<script>
-export default {
-  name: 'App',
-  data() {
-    return {
-      drawer: true,
-      items: [
-        {
-          icon: 'home',
-          title: 'Home',
-          url: '/',
-        },
-        {
-          icon: 'library_books',
-          title: 'Learn Chinese Vocabulary',
-          url: '/learn-chinese-vocabulary',
-        },
-        {
-          icon: 'translate',
-          title: 'Learn Chinese Characters',
-          url: '/learn-chinese-characters',
-        },
-      ],
+<script lang="ts">
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
+@Component
+export default class App extends Vue {
+  name = 'App'
+  drawer = true
+  items = [
+    {
+      icon: 'home',
+      title: 'Home',
+      url: '/',
+    },
+    {
+      icon: 'chat',
+      title: 'Der Die Das - Game',
+      url: '/derdiedasgame',
+    },
+  ]
+  right = true
+  rightDrawer = false
 
-      right: true,
-      rightDrawer: false,
-    }
-  },
-  computed: {
-    title() {
-      return this.$route.meta.title
-    },
-  },
-  methods: {
-    openRoute(url) {
-      this.$router.push(url)
-    },
-  },
+  get title() {
+    return this.$route.meta.title
+  }
+
+  openRoute(url: string) {
+    this.$router.push(url)
+  }
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>
