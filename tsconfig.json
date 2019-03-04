@@ -13,6 +13,7 @@
     "noImplicitAny": false,
     "baseUrl": ".",
     "types": ["webpack-env", "jest"],
+    "resolveJsonModule": true,
     "paths": {
       "@/*": ["src/*"]
     },

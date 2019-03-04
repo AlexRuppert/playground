@@ -1,22 +1,44 @@
 <template  lang='pug'>
-  v-container(fluid grid-list-xs fill-height)
-    v-layout(row wrap justify-center)
-      v-flex(d-flex xs12 sm8 md6)
+  v-container(fluid grid-list-xs column fill-height)
+    v-layout(row justify-center)
+      v-flex(column d-block xs12 sm8 md6)
         v-card
-          v-layout(column d-flex fill-height)
-            v-flex(shrink)
-              v-card-title.title(primary) Guess the Article
-            v-flex(grow fill-height pt-5)
-              v-card-text.display-2
-                v-layout()
-                  v-flex.text-xs-right.font-weight-black.text-capitalize(xs2 pr-4) der
-                  v-flex(xs10 pl-4) {{currentWord.word}}
-            v-flex(shrink)
-              v-card-actions
-                v-layout()
-                  v-btn(block large dark @click='select("der")') Der
-                  v-btn(block large dark @click='select("die")') Die
-                  v-btn(block large dark @click='select("das")') Das
+          v-card-title.title
+            v-flex(xs6)
+              span Points
+            v-flex.text-xs-right.display-2(xs6)
+              number(
+              ref='points'
+              :from='0'
+              :to='points'
+              :duration='0.5'
+              easing='Power1.easeOut')
+        v-card
+          v-card-title
+            v-sparkline(
+              :value='pointsHistory'
+              :gradient='["#03A9F4","#f76747"]'
+              height=50
+              :smooth=15
+              :padding=1
+              type='bars'
+              :line-width=3
+              stroke-linecap='round'
+              gradient-direction='top'
+              auto-draw
+              auto-line-width
+              )
+        v-card.mt-5.quiz-card
+          v-card-title.display-1.py-5.quiz-question
+            v-layout(justify-center)
+              v-flex.text-xs-right.text-capitalize.quiz-solution(xs3 pr-4) {{solution}}
+              v-flex(xs9 pl-4) {{currentWord.german}}
+          v-card-actions
+              v-layout()
+                v-btn(block large color="orange" flat @click='select("der")') Der
+                v-btn(block large color="green" flat @click='select("die")') Die
+                v-btn(block large color="blue" flat @click='select("das")') Das
+       
 </template>
 
 <script lang="ts">
@@ -24,18 +46,18 @@ import { Component, Vue } from 'vue-property-decorator'
 import { useStore } from 'vuex-simple'
 import { Store } from '@/store/store'
 import { delay } from 'helpful-decorators'
+//@ts-ignore
+import nouns from '@/assets/data/german/nouns.json'
 
 @Component
 export default class DerDieDasGame extends Vue {
   public correctnessColor = '#333'
   public store: Store = useStore(this.$store)
-
-  public wordList = [
-    { article: 'der', word: 'Bauer' },
-    { article: 'die', word: 'Laute' },
-    { article: 'das', word: 'Meisterwerk' },
-  ]
+  public points = 0
+  public pointsHistory = Array.apply(null, Array(20)).map(_ => 0)
+  public wordList = nouns
   public currentWordIndex = 0
+  public showSolution = false
 
   // public bar?: FooModule = useModule(this.$store, ['bar', 'foo1'])
   public get readState() {
@@ -43,8 +65,19 @@ export default class DerDieDasGame extends Vue {
     return this.store.derDieDasGame.counter
   }
 
+  public updatePoints(val) {
+    this.points += val
+    this.pointsHistory.push(val)
+    this.pointsHistory.shift()
+  }
+  public mounted() {
+    this.shuffle()
+  }
   public get currentWord() {
     return this.wordList[this.currentWordIndex]
+  }
+  public get solution() {
+    return this.showSolution ? this.currentWord.article : ''
   }
   public incWord() {
     this.currentWordIndex++
@@ -69,9 +102,56 @@ export default class DerDieDasGame extends Vue {
     return option.toLowerCase() === word.toLowerCase()
   }
   async select(option: any) {
-    if (this.isCorrect(option, this.currentWord.article)) {
+    if (this.showSolution) return
+    this.showSolution = true
+    //@ts-ignore
+    this.$anime.timeline().add({
+      targets: '.quiz-solution',
+      translateX: [-50, 0],
+      opacity: [0, 1],
+      delay: 0,
+      duration: 200,
+    })
+    const correct = this.isCorrect(option, this.currentWord.article)
+    if (correct) {
+      this.updatePoints(100)
     } else {
+      this.updatePoints(-200)
     }
+    //@ts-ignore
+    let animation = this.$anime
+      .timeline()
+      .add({
+        targets: '.quiz-card',
+        background: correct ? '#afa' : '#faa',
+        delay: 0,
+        duration: 300,
+      })
+      .add({
+        targets: '.quiz-card',
+        background: '#fff',
+        delay: 500,
+        duration: 200,
+      })
+    await animation.finished
+    //@ts-ignore
+    this.$anime
+      .timeline()
+      .add({
+        targets: '.quiz-question',
+        translateX: [0, 100],
+        opacity: 0,
+        delay: 0,
+        duration: 500,
+      })
+      .add({
+        targets: '.quiz-question',
+        translateX: [-100, 0],
+        opacity: 1,
+        delay: 0,
+        duration: 500,
+      })
+    this.showSolution = false
     this.incWord()
   }
 }

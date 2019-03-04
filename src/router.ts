@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import DerDieDasGame from './views/DerDieDasGame.vue'
 
 Vue.use(Router)
 
@@ -17,7 +16,11 @@ export default new Router({
     {
       path: '/derdiedasgame',
       name: 'derdiedasgame',
-      component: DerDieDasGame,
+      component: () =>
+        import(/* webpackChunkName: "derdiedasgame" */ './views/DerDieDasGame.vue'),
+      meta: {
+        title: 'Der Die Das - Game',
+      },
     },
     {
       path: '/about',

@@ -40,7 +40,6 @@ export default class App extends Vue {
   get title() {
     return this.$route.meta.title
   }
-
   openRoute(url: string) {
     this.$router.push(url)
   }
