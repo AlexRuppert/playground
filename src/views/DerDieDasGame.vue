@@ -29,11 +29,11 @@
               auto-line-width
               )
         v-card.mt-5.quiz-card
-          v-card-title.display-1.py-5.quiz-question
+          v-card-title.display-1.py-5.quiz-question.break-words
             v-layout(justify-center)
               v-flex.text-xs-right.text-capitalize.quiz-solution(xs3 pr-4) {{solution}}
               v-flex(xs9 pl-4) {{currentWord.german}}
-                div.caption.quiz-solution {{currentWord.english}}
+                div.caption {{currentWord.english}}
           v-card-actions
               v-layout()
                 v-btn(block large color="orange" flat @click='select("der")') Der
@@ -136,27 +136,30 @@ export default class DerDieDasGame extends Vue {
       })
     await animation.finished
     //@ts-ignore
-    this.$anime
-      .timeline()
-      .add({
-        targets: '.quiz-question',
-        translateX: [0, 100],
-        opacity: 0,
-        delay: 0,
-        duration: 500,
-      })
-      .add({
-        targets: '.quiz-question',
-        translateX: [-100, 0],
-        opacity: 1,
-        delay: 0,
-        duration: 500,
-      })
+    animation = this.$anime.timeline().add({
+      targets: '.quiz-question',
+      translateX: [0, 100],
+      opacity: 0,
+      delay: 0,
+      duration: 500,
+    })
+    await animation.finished
     this.showSolution = false
     this.incWord()
+    //@ts-ignore
+    animation = this.$anime.timeline().add({
+      targets: '.quiz-question',
+      translateX: [-100, 0],
+      opacity: 1,
+      delay: 0,
+      duration: 500,
+    })
   }
 }
 </script>
 
 <style lang="stylus" scoped>
+.break-words {
+  word-break: break-all;
+}
 </style>
