@@ -4,23 +4,23 @@ self.__precacheManifest = [
     "url": "/playground/robots.txt"
   },
   {
-    "revision": "c64acd07e2cacced70db",
-    "url": "/playground/js/derdiedasgame.d824e6db.js"
+    "revision": "ec6b1f781be07d13f7bc",
+    "url": "/playground/js/derdiedasgame.b42d3764.js"
   },
   {
     "revision": "a144db8ae08e6617d41a",
     "url": "/playground/js/chunk-vendors.78f9fa25.js"
   },
   {
-    "revision": "6598a0b11dda557843d6",
-    "url": "/playground/js/app.ab150917.js"
+    "revision": "6e8ecc43721131593d13",
+    "url": "/playground/js/app.3fc7c5d5.js"
   },
   {
     "revision": "6cc22313f32bd125d3ff",
     "url": "/playground/js/about.9ded2934.js"
   },
   {
-    "revision": "50e11405136c5e1934ae524150dd9333",
+    "revision": "543d644fea76906b4522501d6367ccb8",
     "url": "/playground/index.html"
   },
   {

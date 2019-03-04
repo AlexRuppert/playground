@@ -33,6 +33,7 @@
             v-layout(justify-center)
               v-flex.text-xs-right.text-capitalize.quiz-solution(xs3 pr-4) {{solution}}
               v-flex(xs9 pl-4) {{currentWord.german}}
+                div.caption.quiz-solution {{currentWord.english}}
           v-card-actions
               v-layout()
                 v-btn(block large color="orange" flat @click='select("der")') Der
