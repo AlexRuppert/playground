@@ -29,10 +29,10 @@
               auto-line-width
               )
         v-card.mt-5.quiz-card
-          v-card-title.display-1.py-5.quiz-question.break-words
+          v-card-title.display-1.py-5.quiz-question
             v-layout(justify-center)
               v-flex.text-xs-right.text-capitalize.quiz-solution(xs3 pr-4) {{solution}}
-              v-flex(xs9 pl-4) {{currentWord.german}}
+              v-flex.break-words(xs9 pl-4) {{currentWord.german}}
                 div.caption {{currentWord.english}}
           v-card-actions
               v-layout()
