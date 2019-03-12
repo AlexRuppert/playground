@@ -22,20 +22,17 @@ import { Component } from 'vue-property-decorator'
 export default class App extends Vue {
   name = 'App'
   drawer = true
-  items = [
-    {
-      icon: 'home',
-      title: 'Home',
-      url: '/',
-    },
-    {
-      icon: 'chat',
-      title: 'Der Die Das - Game',
-      url: '/derdiedasgame',
-    },
-  ]
+  items = []
   right = true
   rightDrawer = false
+  mounted() {
+    //@ts-ignore
+    let routes = this.$router.options.routes
+    routes = routes.filter(r => r.meta && r.meta.title)
+    this.items = routes.map(r => {
+      return { icon: r.meta.icon || 'done', title: r.meta.title, url: r.path }
+    })
+  }
 
   get title() {
     return this.$route.meta.title

@@ -12,6 +12,10 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home,
+      meta: {
+        icon: 'home',
+        title: 'Home',
+      },
     },
     {
       path: '/derdiedasgame',
@@ -19,7 +23,18 @@ export default new Router({
       component: () =>
         import(/* webpackChunkName: "derdiedasgame" */ './views/DerDieDasGame.vue'),
       meta: {
+        icon: 'chat',
         title: 'Der Die Das - Game',
+      },
+    },
+    {
+      path: '/choosewords',
+      name: 'choosewords',
+      component: () =>
+        import(/* webpackChunkName: "choosewords" */ './views/ChooseWords.vue'),
+      meta: {
+        icon: 'playlist_add_check',
+        title: 'Choose Words',
       },
     },
     {
