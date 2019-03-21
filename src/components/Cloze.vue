@@ -10,7 +10,7 @@
               label=''
               @input='selectionChanged'
               
-              :style='{width: width + "px", display: "inline-flex"}')
+              :style='{width: width + "px", display: "inline-block"}')
     v-btn.primary(flat @click='removeWrong') Remove Wrong
 </template>
 
@@ -118,12 +118,12 @@ export default class Cloze extends Vue {
 
 <style lang="stylus">
 .inline-select {
-  display: inline-flex;
+  display: inline-block;
   margin-top: 0;
   margin-left: 5px;
   margin-right: 5px;
   padding: 0;
-  max-wodth: 200px;
+  max-width: 200px;
 
   .v-input__slot {
     margin-bottom: 0;

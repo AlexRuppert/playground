@@ -12,19 +12,19 @@ self.__precacheManifest = [
     "url": "/playground/js/chunk-vendors.c51da752.js"
   },
   {
-    "revision": "7c4f82974ebe28feefc0",
-    "url": "/playground/js/choosewords.2326799d.js"
+    "revision": "3716ffc32e1f45f1d755",
+    "url": "/playground/js/choosewords.cdbb1567.js"
   },
   {
-    "revision": "1c8a8636498d4f798e21",
-    "url": "/playground/js/app.0de10001.js"
+    "revision": "03a745c80b4c493104d1",
+    "url": "/playground/js/app.982d0de2.js"
   },
   {
     "revision": "d78db66c369ba23f7a32",
     "url": "/playground/js/about.fc573c4e.js"
   },
   {
-    "revision": "02115299700e1e87e82392f19793ec9a",
+    "revision": "d65553bc901348a443d4f5c51251b354",
     "url": "/playground/index.html"
   },
   {
@@ -36,7 +36,7 @@ self.__precacheManifest = [
     "url": "/playground/css/chunk-vendors.71887c42.css"
   },
   {
-    "revision": "7c4f82974ebe28feefc0",
-    "url": "/playground/css/choosewords.09dfe949.css"
+    "revision": "3716ffc32e1f45f1d755",
+    "url": "/playground/css/choosewords.8c581b90.css"
   }
 ];
