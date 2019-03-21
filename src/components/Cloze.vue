@@ -1,20 +1,21 @@
 <template lang='pug'>
-  v-form.blocks.line-height(ref='form')
-    span.block(v-for='(block, i) in textBlocks' :key='i')
-      span {{block.text}}
-      v-select.inline-select(v-if='!block.last'
-           v-model='block.value'
-           :key='i'
-          :items='options(i)'
-          label=''
-          @input='selectionChanged'
-         :rules="[(value => !!value || 'Required.')]"
-          :style='{width: width + "px"}')
-
+  div
+    v-form.blocks.line-height(ref='form')
+      span.block(v-for='(block, i) in textBlocks' :key='i')
+        span {{block.text}}
+        v-select.inline-select(v-if='!block.last'
+              v-model='block.value'
+              :key='i'
+              :items='options(i)'
+              label=''
+              @input='selectionChanged'
+              
+              :style='{width: width + "px"}')
+    v-btn.primary(flat @click='removeWrong') Remove Wrong
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 @Component
 export default class Cloze extends Vue {
   @Prop(String) readonly text!: string
@@ -23,6 +24,11 @@ export default class Cloze extends Vue {
   currentOptions = []
   values = []
   width = 150
+  oldText = ''
+
+  @Watch('text') onTextChanged(val: string, oldVal: string) {
+    this.currentOptions = []
+  }
   options(i) {
     if (this.currentOptions.length === 0) {
       this.currentOptions = this.maxOptions
@@ -72,22 +78,36 @@ export default class Cloze extends Vue {
     const longest = Math.max(...options.map(el => el.length))
     return 10 + longest * 10
   }
-  selectionChanged() {
+  updateValues() {
     this.values = this.textBlocks
       .map(t => t.value)
       .filter((_, i) => i !== this.textBlocks.length - 1)
-    const nonEmptyValues = this.values.filter(v => v.length > 0)
-    let maxOptionsCopy = [...this.maxOptions]
+  }
+  selectionChanged() {
+    this.updateValues()
+    const maxOptionsCopy = [...this.maxOptions]
     this.values.forEach(v => {
       const index = maxOptionsCopy.indexOf(v)
       if (index !== -1) maxOptionsCopy.splice(index, 1)
     })
-
+    const counts = maxOptionsCopy.reduce((acc, val) => {
+      acc[val] = (acc[val] || 0) + 1
+      return acc
+    }, {})
     this.currentOptions = maxOptionsCopy
 
     if (JSON.stringify(this.maxOptions) === JSON.stringify(this.values)) {
       this.$emit('correct', this.values)
     }
+  }
+  removeWrong() {
+    this.updateValues()
+    if (this.values.length !== this.maxOptions.length) return
+    const correctness = this.maxOptions.forEach((o, i) => {
+      if (o !== this.values[i]) {
+        this.textBlocks[i].value = ''
+      }
+    })
   }
   mounted() {
     //@ts-ignore
@@ -98,7 +118,7 @@ export default class Cloze extends Vue {
 
 <style lang="stylus">
 .inline-select {
-  display: inline-block;
+  display: inline-flex;
   margin-top: 0;
   margin-left: 5px;
   margin-right: 5px;
