@@ -10,7 +10,7 @@
               label=''
               @input='selectionChanged'
               
-              :style='{width: width + "px"}')
+              :style='{width: width + "px", display: "inline-flex"}')
     v-btn.primary(flat @click='removeWrong') Remove Wrong
 </template>
 

@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/playground/precache-manifest.d3612c4b44826eda0eb59250e262063c.js"
+  "/playground/precache-manifest.7974b0b936e3d63bd93e3aa3bb774b6d.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "playground"});
